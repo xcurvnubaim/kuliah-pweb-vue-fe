@@ -12,7 +12,7 @@ const getMe = async () => {
         const response = await axios.get(import.meta.env.VITE_API_URL + '/api/users/me', { withCredentials: true });
         console.log(response.data);
         me.value = response.data;
-        avatarUrl.value = import.meta.env.VITE_API_URL + (response.data.user.photo ? response.data.user.photo : "");
+        avatarUrl.value = import.meta.env.VITE_API_URL + (response.data.user?.photo ? response.data.user.photo : "");
     } catch (e) {
         console.log(e);
     }
@@ -129,9 +129,9 @@ console.log(me.value);
                                 id="user-menu-item-0">Your Profile</a>
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                                 id="user-menu-item-1">Settings</a> -->
-                            <a v-if="me.user" @click="logout()" href="/" class="block px-4 py-2 text-sm text-gray-700"
+                            <a v-if="me?.user" @click="logout()" href="/" class="block px-4 py-2 text-sm text-gray-700"
                                 role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
-                            <a v-if="!me.user" href="/login" class="block px-4 py-2 text-sm text-gray-700"
+                            <a v-if="!me?.user" href="/login" class="block px-4 py-2 text-sm text-gray-700"
                                 role="menuitem" tabindex="-1" id="user-menu-item-2">Login</a>
                         </div>
                     </div>
@@ -147,9 +147,9 @@ console.log(me.value);
                     aria-current="page">Dashboard</a>
                 <a href="#"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Team</a> -->
-                <a v-if="me.user" href="/"
+                <a v-if="me?.user" href="/"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Logout</a>
-                <a v-if="!me.user" href="/login"
+                <a v-if="!me?.user" href="/login"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Login</a>
             </div>
         </div>
