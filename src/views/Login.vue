@@ -15,7 +15,6 @@ const login = async () => {
         }, {
             withCredentials: true,
         });
-        console.log(response.data);
         router.push('/');
     } catch (error) {
         console.error(error);
