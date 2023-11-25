@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
 const me = ref(null);
 const avatarUrl = ref(null);
@@ -9,7 +9,7 @@ const isVisible = ref(false);
 
 const getMe = async () => {
     try {
-        const response = await axios.get(import.meta.env.VITE_API_URL + '/api/users/me', { withCredentials: true });
+        const response = await axios.get(import.meta.env.VITE_API_URL + '/api/users/me', { withCredentials: true});
         console.log(response.data);
         me.value = response.data;
         avatarUrl.value = import.meta.env.VITE_API_URL + (response.data.user?.photo ? response.data.user.photo : "");
@@ -23,10 +23,12 @@ const showDropdown = () => {
 const logout = async () => {
     console.log('logout')
     try {
-        const response = await axios.post(import.meta.env.VITE_API_URL + '/api/users/logout', { withCredentials: true });
+        await getMe();
+        const response = await axios.post(import.meta.env.VITE_API_URL + '/api/users/logout',{}, { withCredentials: true });
         console.log(response.data);
         me.value = null;
         avatarUrl.value = ""
+        useRouter().push('/');
     } catch (e) {
         console.log(e);
     }
@@ -129,8 +131,8 @@ console.log(me.value);
                                 id="user-menu-item-0">Your Profile</a>
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                                 id="user-menu-item-1">Settings</a> -->
-                            <a v-if="me?.user" @click="logout()" href="/" class="block px-4 py-2 text-sm text-gray-700"
-                                role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                            <button v-if="me?.user" @click="logout()" class="block px-4 py-2 text-sm text-gray-700"
+                                role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</button>
                             <a v-if="!me?.user" href="/login" class="block px-4 py-2 text-sm text-gray-700"
                                 role="menuitem" tabindex="-1" id="user-menu-item-2">Login</a>
                         </div>
@@ -147,7 +149,7 @@ console.log(me.value);
                     aria-current="page">Dashboard</a>
                 <a href="#"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Team</a> -->
-                <a v-if="me?.user" href="/"
+                <a @click="logout()" v-if="me?.user" href="/"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Logout</a>
                 <a v-if="!me?.user" href="/login"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Login</a>

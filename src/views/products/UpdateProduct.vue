@@ -1,6 +1,6 @@
 
 <template>
-    <form @submit.prevent="addProduct" class="mx-5 mt-3">
+    <form @submit.prevent="updateProduct" class="mx-5 mt-3">
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
                 <h2 class="text-base font-semibold leading-7 text-gray-">Add Product</h2>
@@ -13,8 +13,7 @@
                                 class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                                 <input type="text" name="Name" id="Name"
                                     class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                    placeholder="Gula merah" 
-                                    v-model="productName"/>
+                                    placeholder="Gula merah" v-model="productName" />
                             </div>
                         </div>
                     </div>
@@ -29,9 +28,7 @@
                         </div>
                         <input type="text" name="price" id="price"
                             class="block rounded-md border-0 py-1.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="0.00" 
-                            v-model="productPrice"
-                            />
+                            placeholder="0.00" v-model="productPrice" />
                     </div>
                 </div>
 
@@ -48,24 +45,45 @@
     </form>
 </template>
 
-<script setup>
+<script>
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 
-const productName = ref(null);
-const productPrice = ref(null);
+export default {
+    setup() {
+        const router = useRouter();
+        const prodID = router.currentRoute.value.params.id
+        const productName = ref(null);
+        const productPrice = ref(null);
 
-const router = useRouter();
-const addProduct = async ()=>{
-    const response = await axios.post(import.meta.env.VITE_API_URL + '/api/products', {
-        name: productName.value,
-        price: productPrice.value
-    }, {
-        withCredentials: true,
-    });
-    console.log(response.data);
-    router.push('/products/me');
-}   
+        const getProductDetail = async () => {
+            const response = await axios.get(import.meta.env.VITE_API_URL + '/api/products/' + prodID, {
+                withCredentials: true,
+            });
+            productName.value = response.data.name;
+            productPrice.value = response.data.price;
+        }
+
+        const updateProduct = async () => {
+            const response = await axios.patch(import.meta.env.VITE_API_URL + '/api/products/' + prodID, {
+                name: productName.value,
+                price: productPrice.value
+            }, {
+                withCredentials: true,
+            });
+            console.log(response.data);
+            router.push('/products/me');
+        }
+
+        getProductDetail()
+
+        return {
+            productName,
+            productPrice,
+            updateProduct
+        }
+    }
+}
 </script>

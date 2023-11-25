@@ -51,7 +51,7 @@ getMe()
         <div class="flex justify-center">
             <h1 class="text-4xl font-bold text-red-500">Products</h1>
         </div>
-        <div class="flex justify-center">
+        <div class="flex justify-center flex-col items-center">
             <table class="mx-5">
                 <thead>
                     <tr>
@@ -67,11 +67,16 @@ getMe()
                         <td class="border border-slate-800 px-5">{{ item.name }}</td>
                         <td class="border border-b-slate-800 border-r-transparent">Rp</td>
                         <td class="border border-slate-800 pl-5 text-right">{{ new Intl.NumberFormat('id-ID').format(item.price) }}</td>
-                        <td class="px-3 py-1 border border-slate-800 hover:bg-blue-300 cursor-pointer"><img :src="editIcon" alt="" height="2px"></td>
+                        <td class="px-3 py-1 border border-slate-800 hover:bg-blue-300 cursor-pointer"><a :href="`/products/me/` + item.id"><img :src="editIcon" alt="" height="2px"></a></td>
                         <td @click="open = true; id=item.id" class="px-3 py-1 border border-slate-800 hover:bg-red-300 cursor-pointer"><img :src="deleteIcon" ></td>
                     </tr>
                 </tbody>
             </table>
+            <div class="mt-5">
+                <router-link to="/products/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Create
+                </router-link>
+            </div>
         </div>
     </div>
     <Modal v-if="open" :open=open @close="open = false" @delete="deleteProduct"></Modal>
